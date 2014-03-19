@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+{% load bootstrap_toolkit %}
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{% block title %}{% endblock %} 17放松</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="网易每日轻松一刻,今日之声,科技万有瘾力,娱乐BigBang,易百科,历史七日谈,17relax,一起放松" />
+    <meta name="keywords" content="搜狐,狐先知,狐揭秘,神吐槽,热辣评,笑话, 每日一则笑话,17relax,一起放松" />
+    <meta name="description" content="17relax,一起放松，让您每日轻松一刻！">
+    <meta name="author" content="Teddy">
+    <link title="RSS" type="application/rss+xml" rel="alternate" href="/rss" />
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.min.css">
+    <!--[if lte IE 6]>
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap-ie6.min.css">
+    <![endif]-->
+    <!--[if lte IE 7]>
+    <link rel="stylesheet" type="text/css" href="/static/css/ie.css">
+    <![endif]-->
+    <link rel='stylesheet' href='/static/css/all.css' />
+    <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    </head>
+    <body>
+      <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+          <div class="ym-wrapper">
+            <a id="home" class="brand" data-placement="bottom" data-toggle="tooltip" href="/" data-original-title="一起放松">17放松</a>
+            <div class="nav-collapse collapse">
+              <ul class="nav">
+                <li id="relaxedMoment"><a href="/tag-163/relaxedMoment" data-placement="bottom" data-toggle="tooltip" data-original-title="每日轻松一刻">轻松一刻</a></li>
+                <li id="todayVoice"><a href="/tag-163/todayVoice" data-placement="bottom" data-toggle="tooltip" data-original-title="今日之声">之声</a></li>
+                <li id="keji"><a href="/tag-163/keji" data-placement="bottom" data-toggle="tooltip" data-original-title="科技万有瘾力">科技</a></li>
+                <li id="bigbang"><a href="/tag-163/bigbang" data-placement="bottom" data-toggle="tooltip" data-original-title="娱乐BigBang">娱乐</a></li>
+                <li id="yibaike"><a href="/tag-163/yibaike" data-placement="bottom" data-toggle="tooltip" data-original-title="易百科">百科</a></li>
+                <li id="lishi"><a href="/tag-163/lishi" data-placement="bottom" data-toggle="tooltip" data-original-title="历史七日谈">历史</a></li>
+                <li id="xianzhidao"><a href="/tag-sohu/xianzhidao" data-placement="bottom" data-toggle="tooltip" data-original-title="狐先知">先知</a></li>
+                <li id="shentucao"><a href="/tag-sohu/shentucao" data-placement="bottom" data-toggle="tooltip" data-original-title="神吐槽">吐槽</a></li>
+                <li id="hujiemi"><a href="/tag-sohu/hujiemi" data-placement="bottom" data-toggle="tooltip" data-original-title="狐揭秘">揭秘</a></li>
+                <li id="relaping"><a href="/tag-sohu/relaping" data-placement="bottom" data-toggle="tooltip" data-original-title="热辣评">辣评</a></li>
+                <li id="joke"><a href="/tag-joke" data-placement="bottom" data-toggle="tooltip" data-original-title="每日一笑">笑话</a></li>
+              </ul>
+              <!--
+              <form class="navbar-search pull-left" action="/search">
+                <input type="text" class="search-query span2" name="q" value="">
+              </form>
+              -->
+            </div><!--/.nav-collapse -->
+          </div>
+        </div>
+      </div>
+
+      <div class="ym-wrapper" id="body-main">
+        <!--
+        <p>
+          {# block breadcrumbs %}{% endblock #}
+        </p>
+        -->
+        <!--[if lt IE 7]>
+        <p class="chromeframe">您还在使用 <strong>IE6</strong>？ 请 <a href="http://browsehappy.com/">升级到IE7以上</a> 或者 <a href="http://www.google.com/chromeframe/?redirect=true">启用 Google Chrome Frame</a> 以获得更好的体验.</p>
+        <![endif]-->
+
+        {% block content %}{% endblock %}
+
+        <footer>
+          <hr>
+          <div class="row-fluid">
+            <div class="span6">
+              <p>&copy;2013 <a href="http://www.17relax.com">17放松</a></p>
+              <p class="text-left"><small>本站所有内容均来自网络，便于阅读，版权归原版权人所有，如有侵权，请联系我们，我们会及时删除侵权内容，谢谢！</small></p>
+            </div>
+          </div>
+        </footer>
+      </div>
+      <a style="display:none;" rel="nofollow" href="#header" id="go-to-top">▲</a>
+      <script src="/static/js/jquery-1.8.3.min.js"></script>
+        <script type="text/javascript" src="/static/js/all.js"></script>
+        <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+        <script src="/static/js/jquery.lazyload.min.js" type="text/javascript"></script>
+        <script type="text/javascript">
+          $(function() {
+              /*
+                 var url=window.location.pathname;
+                 var active_page= $('.nav li a[href="'+url+'"]').parent();
+                 active_page.addClass('active');
+               */
+              $("img.lazy").lazyload({ 
+effect : "fadeIn"
+});
+              //$("#home").data('一起放松');
+              var active =  '{{active}}' || 'home';
+              var node = $('#' + active);
+              if (node.attr('class') !== 'active') {
+              $('.active', '.nav').removeClass('active');
+              node.addClass('active');
+              }
+              $("#go-to-top").click(function(){
+                $("html, body").animate({'scrollTop': 0}, 400);
+                return false;
+                });
+              $(window).scroll(function() {
+                var top = $(document).scrollTop();
+                var g = $("#go-to-top");
+                if (top > 300 && g.is(":hidden")) {
+                g.fadeIn();
+                } else if(top < 300 && g.is(":visible")) {
+                g.fadeOut();
+                }
+                });
+});
+            $("a[data-toggle=tooltip]").tooltip().hover(function(e) {
+                e.preventDefault()
+            })
+</script>
+  </body>
+</html>
+

@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ cn_tag }} - {% endblock %}
+
+
+{% block content %}
+<ul class="unstyled topic-list">
+    {% for article in articles %}
+    <li>
+        <a title="{{ article.title }}" href="/article/{{ article.id }}/">
+          <img class="lazy" src="{{ article.big_pic }}" data-original="{{
+          article.big_pic }}" alt="{{ article.title }}">
+          <noscript><img src="{{ article.big_pic }}" alt="{{ article.title }}"></noscript>
+        </a>
+        
+        <h3><a href="/article/{{ article.id }}/" class="bigger-size">
+            {{ article.title }}
+        </a></h3>
+        <time>{{ article.update_time }}</time>
+        <span class="view-count"><strong>{{ article.comment_num }}</strong> 人围观,</span> <span class="ds-thread-count" data-thread-key=""></span>
+         <span class="download">,<a title="下载txt" href="">下载</a></span>
+         <p>{{ article.abstraction }}</p>
+    </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}
+

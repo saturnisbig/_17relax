@@ -1,0 +1,15 @@
+
+<p>Tags from 搜狐网</p>
+<ul>
+    {% for t in tags_sohu %}
+    <li>{{ t.name }} {{ t.tagid }} {{ t.come_from }}</li>
+    {% endfor %}
+</ul>
+
+
+<p>Tags from 网易</p>
+<ul>
+    {% for t in tags_163 %}
+    <li>{{ t.name }} {{ t.tagid }} {{ t.come_from }}</li>
+    {% endfor %}
+</ul>

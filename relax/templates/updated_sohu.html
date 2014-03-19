@@ -1,0 +1,18 @@
+
+{% if news%}
+<p>文章縱數: {{ news.count }}</p>
+<table>
+    {% for article in news %}
+    <tr>
+        <td><a href="/article/{{ article.id }}"/>{{ article.title }}</a></td>
+        <td>{{ article.docid }}</td>
+        <td>{{ article.title }}</td>
+        <td>{{ article.update_time }}</td>
+        <td>{{ article.abstraction }}</td>
+        <td>{{ article.comment_num }}</td>
+        <td>{{ article.big_pic }}</td>
+    </tr>
+    {% endfor %}
+</table>
+    
+{% endif %}
