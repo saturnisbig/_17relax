@@ -10,17 +10,28 @@ import urllib2
 # Create your views here.
 from models import Article, Tag
 from utils.data_convert import convert_sohu_img, convert_163
+from utils.fetch import Fetch163
+
+
+def update_today(request):
+    tags = Tag.objects.all().filter(come_from__contains='网易')
+    fetch163 = Fetch163(tags)
+    today_163 = fetch163.fetch()
+    #print today_163
+    return render(request, 'output.html', {'today_163': today_163})
 
 
 def get_tag_article(request, tid):
     tag = Tag.objects.get(id=int(tid))
     if tag:
         articles = Article.objects.all().filter(tag=tag).order_by('-update_time')
+        cn_tag = tag.name
     else:
         articles = ['']
+        cn_tag = ''
 
     return render(request, 'article_list.html', {'articles': articles,
-                                                 'cn_tag': tag.name})
+                                                 'cn_tag': cn_tag})
 
 
 def update_163(request):
@@ -112,7 +123,7 @@ def insert_article(d, t):
             article.big_pic = doc_json['shareRead']['pics']
             article.update_time = doc_json['time']
             article.comment_num = doc_json['commentNum']
-            content = doc_json['content']    #.replace('\\', '')
+            content = doc_json['content']    # .replace('\\', '')
             if content:
                 content = convert_sohu_img(content)
             article.content = content

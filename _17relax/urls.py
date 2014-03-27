@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     url(r'^update-163/', 'relax.views.update_163'),
     url(r'^article/(\d+)/', 'relax.views.get_detail_article'),
     url(r'^tag/(\d+)/', 'relax.views.get_tag_article'),
+    url(r'^updateToday/', 'relax.views.update_today'),
 
     url(r'^admin/', include(admin.site.urls)),
 )

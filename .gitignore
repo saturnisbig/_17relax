@@ -1,1 +1,3 @@
 *.pyc
+*.markdown
+*.vim

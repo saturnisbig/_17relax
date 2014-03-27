@@ -6,6 +6,10 @@ class Tag(models.Model):
     tagid = models.IntegerField(blank=True, default=0)
     come_from = models.CharField(max_length=25, blank=True)
     ctime = models.DateTimeField(auto_now_add=True)
+    #times update daily or weekly
+
+    def __unicode__(self):
+        return self.name
 
 
 class Article(models.Model):
@@ -19,3 +23,6 @@ class Article(models.Model):
     comment_num = models.IntegerField(default=0)
     ctime = models.DateTimeField(auto_now_add=True)
     tag = models.ForeignKey(Tag)
+
+    def __unicode__(self):
+        return self.title
