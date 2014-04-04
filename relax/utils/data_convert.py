@@ -10,9 +10,10 @@ def convert_sohu_img(content):
     result = []
 
     def rep_img(m):
+        img_url = m.group(3) + m.group(4)
         return '<img class="lazy" alt="" src="%s" data-original="%s"\
             style="display:inline;"/><noscript><img src="%s"/></noscript><br/>\
-            </a>' % (m.group(3)+m.group(4), m.group(3), m.group(4))
+            </a>' % (img_url, img_url, img_url)
 
     for data in content_sp:
         result.append(re.sub(pat, rep_img, data))
@@ -22,7 +23,12 @@ def convert_sohu_img(content):
 
 def convert_163(content, img_list):
     pat = u"(<!--IMG#\d+-->)"
+    content = content.replace('<!--@@PRE-->', '')
     data = re.split(pat, content)  # remove the last item 声明内容
+    try:
+        abstract = data[0]
+    except IndexError:
+        abstract = ''
     for v in img_list:
         if v['ref'] in data:
             pos = data.index(v['ref'])
@@ -31,4 +37,4 @@ def convert_163(content, img_list):
                 </noscript><br />' % (v['alt'], v['src'], v['src'], v['alt'],
                                       v['src'])
             data[pos] = rep_img
-    return ' '.join(data)
+    return ' '.join(data), abstract

@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ article.title }} - {% endblock %}
+
+{% block content %}
+<div class="news">
+    <div class="page-header">
+        <h2>{{ article.title }}</h2>
+        <small>
+          <em>来源: {{ article.come_from }},&nbsp;&nbsp;{{ article.update_time }},
+                &nbsp;&nbsp;{{ article.tag.name }}
+                &nbsp;&nbsp;{{ article.comment_num }} 人围观,
+            </em>
+        </small>
+
+    </div>
+
+    <div class="news-content }}">
+        {{ article.content }}
+
+    </div>
+    <br />
+</div>
+
+{% endblock %}
