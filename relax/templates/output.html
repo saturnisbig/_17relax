@@ -7,12 +7,22 @@
 {{ content }}
 {% endautoescape %}
 
+<h2>网易</h2>
 {% for tag, articles in today_163.items %}
-<h3>{{ tag }}</h3>
+<p>{{ tag }}</p>
 {% for article in articles %}
-<p>{{ article.title }} {{ article.update_time }} {{ article.docid }}</p>
+<p><a href='/article/{{ article.id }}/'>{{ article.title }}</a>
+  {{ article.update_time }} {{ article.abstract }}</p>
 {% endfor %}
 {% endfor %}
 
+<h2>搜狐</h2>
+{% for tag, articles in today_sohu.items %}
+<p>{{ tag }}</p>
+{% for article in articles %}
+<p><a href='/article/{{ article.id }}/'>{{ article.title }}</a>
+  {{ article.update_time }} {{ article.abstract }}</p>
+{% endfor %}
+{% endfor %}
 </div>
 {% endblock %}

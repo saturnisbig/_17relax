@@ -161,7 +161,7 @@ class FetchSohu(object):
         except urllib2.URLError, e:
             urllib_error(e)
         else:
-            articles = eval(resp.read())
+            articles = json.load(resp)
             articles = articles.get('newsList', '')
             if articles:
                 #today_articles = self._today_filter(articles)

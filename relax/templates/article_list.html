@@ -5,15 +5,15 @@
 
 {% block content %}
 <ul class="unstyled topic-list">
-    {% for article in articles %}
+    {% for article in news %}
     <li>
-        <a title="{{ article.title }}" href="/article/{{ article.id }}/">
-          <img class="lazy" src="{{ article.big_pic }}" data-original="{{
-          article.big_pic }}" alt="{{ article.title }}">
-          <noscript><img src="{{ article.big_pic }}" alt="{{ article.title }}"></noscript>
+        <a title="{{ article.title }}" href="/news/{{ article.id }}/">
+          <img class="lazy" src="{{ article.list_pic }}" data-original="{{
+          article.list_pic}}" alt="{{ article.title }}">
+          <noscript><img src="{{ article.list_pic }}" alt="{{ article.title }}"></noscript>
         </a>
         
-        <h3><a href="/article/{{ article.id }}/" class="bigger-size">
+        <h3><a href="/news/{{ article.id }}/" class="bigger-size">
             {{ article.title }}
         </a></h3>
         <time>{{ article.update_time }}</time>

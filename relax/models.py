@@ -12,7 +12,7 @@ class Tag(models.Model):
         return self.name
 
 
-class Article(models.Model):
+class News(models.Model):
     docid = models.CharField(max_length=30, unique=True)
     title = models.CharField(max_length=100)
     big_pic = models.URLField(blank=True)
