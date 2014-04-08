@@ -17,10 +17,10 @@ def update_today(request):
     tags = Tag.objects.all()
     tags_163 = tags.filter(come_from__contains='网易')
     fetch_163 = Fetch163(tags_163)
-    today_163 = fetch_163.fetch()
+    today_163 = fetch_163.fetch(today=False)
     tags_sohu = tags.filter(come_from__contains='搜狐')
     fetch_sohu = FetchSohu(tags_sohu)
-    today_sohu = fetch_sohu.fetch()
+    today_sohu = fetch_sohu.fetch(today=False)
     #print today_163
     return render(request, 'output.html', {'today_163': today_163,
                                            'today_sohu': today_sohu})

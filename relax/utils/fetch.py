@@ -18,20 +18,19 @@ class Fetch163(object):
     detail_link = 'http://c.3g.163.com/nc/article/%s/full.html'
 
     def __init__(self, tags=''):
-        """ initial with Tag object list """
+        """ initial with Tag list """
         self.tags = tags
 
-    def fetch(self):
+    def fetch(self, today=True):
         result = {}
         if self.tags:
             for t in self.tags:
-                result[t.name] = self._fetch_latest_for_tag(t)
+                result[t.name] = self._fetch_latest_for_tag(t, today)
         return result
 
-    def _fetch_latest_for_tag(self, tag):
+    def _fetch_latest_for_tag(self, tag, today):
         """
-        fetch the latest article for Tag object tag
-        return a News obj list for tag today
+        fetch the latest news for Tag, return a News list for tag today
         """
         result = []
         url = Fetch163.search_link % urllib2.quote(tag.name.encode('utf8'))
@@ -42,22 +41,21 @@ class Fetch163(object):
         else:
             doc = eval(resp.read())
             if doc and type(doc) is list:
-                doc_today = doc
-                for d in doc_today:
+                if today:
+                    news_today = self._today_filter(doc)
+                else:
+                    news_today = doc
+                for d in news_today:
                     docid = d.get('docid', '')
                     if docid:
                         try:
                             News.objects.get(docid=docid)
                         except News.DoesNotExist:
                             result.append(self._insert_latest_news(docid, tag))
-                return result
             else:
-                print 'content not correct: %s' % tag
-                return result
+                print 'Fetch news for tag: %s, Error' % tag.name
 
-    def _today_filter(self, doc):
-        return [d for d in doc if str(datetime.date.today()) in
-                d.get('ptime', '')]
+            return result
 
     def _insert_latest_news(self, docid, tag):
         """
@@ -69,33 +67,39 @@ class Fetch163(object):
         except urllib2.URLError as e:
             urllib_error(e)
         else:
+            news = News()
             doc_json = json.load(resp)
             content = doc_json[doc_json.keys()[0]]
-            if content:
-                article = News()
+            try:
                 title = content['title']
-                if self._filter_test(title):
-                    article.docid = docid
-                    article.tag = tag
-                    article.title = title
-                    article.comment_num = content['replyCount']
-                    article.update_time = content['ptime']
-                    img_list = content['img']
-                    article.list_pic = img_list[0]['src']
-                    article.content, intro = convert_163(content['body'],
-                                                         img_list)
-                    article.abstract = intro
-                    article.save()
-                return article
+            except KeyError:
+                print "Error while Fetching Tag: %s, docid: %s" % (tag.name,
+                                                                   docid)
             else:
-                return None
+                if self._filter_test(title):
+                    print title
+                    news.docid = docid
+                    news.tag = tag
+                    news.title = title
+                    news.comment_num = content['replyCount']
+                    news.update_time = content['ptime']
+                    img_list = content['img']
+                    news.list_pic = img_list[0]['src']
+                    news.content, desc = convert_163(content['body'], img_list)
+                    news.abstract = desc
+                    news.save()
+            return news
 
     def _filter_test(self, title):
         return not (u'测试' in title or 'test' in title)
 
+    def _today_filter(self, doc):
+        return [d for d in doc if str(datetime.date.today()) in
+                d.get('ptime', '')]
+
 
 class FetchSohu(object):
-    """Fetch latest article for tags of sohu """
+    """Fetch latest news for tags of sohu """
     # 鲜知道: subId = 681
     # 热辣评:
     # http://api.k.sohu.com/api/flow/newslist.go?subId=683&pubId=0&sid=9&
@@ -110,19 +114,19 @@ class FetchSohu(object):
     def __init__(self, tags):
         self.tags = tags
 
-    def fetch(self):
+    def fetch(self, today=True):
         result = {}
         for t in self.tags:
-            result[t.name] = self._fetch_latest_for_tag(t)
+            result[t.name] = self._fetch_latest_for_tag(t, today)
         return result
 
-    def _fetch_latest_for_tag(self, tag):
+    def _fetch_latest_for_tag(self, tag, today):
         if tag.tagid > 0:
-            return self._fetch_with_tagid(tag)
+            return self._fetch_with_tagid(tag, today)
         elif u'搜狐' in tag.come_from:
-            return self._fetch_by_search(tag)
+            return self._fetch_by_search(tag, today)
 
-    def _fetch_by_search(self, tag):
+    def _fetch_by_search(self, tag, today):
         result = []
         url = FetchSohu.search_url % urllib2.quote(tag.name.encode('utf8'))
         try:
@@ -131,29 +135,31 @@ class FetchSohu(object):
             urllib_error(e)
         else:
             doc = json.load(resp)
-            articles = [d for d in doc.get('resultList', '')
-                        if d.get('newsType', '') == 3]
-            #today_articles = self._today_filter(articles)
-            today_articles = articles
-            for d in today_articles:
+            news = [d for d in doc.get('resultList', '')
+                    if d.get('newsType', '') == 3]
+            if today:
+                news_today = self._today_filter(news)
+            else:
+                news_today = news
+            for d in news_today:
                 docid = d.get('id', '')
                 try:
                     News.objects.get(docid=docid)
                 except ObjectDoesNotExist:
-                    article = News()
-                    article.tag = tag
-                    article.docid = docid
-                    article.title = d.get('title', '')
-                    article.abstract = d.get('abstrac', '')
-                    u_time, c_num, news = self._fetch_article(docid)
-                    article.update_time = u_time
-                    article.comment_num = c_num
-                    article.content = news
-                    article.save()
-                    result.append(article)
+                    news = News()
+                    news.tag = tag
+                    news.docid = docid
+                    news.title = d.get('title', '')
+                    news.abstract = d.get('abstrac', '')
+                    u_time, c_num, content = self._fetch_news(docid)
+                    news.update_time = u_time
+                    news.comment_num = c_num
+                    news.content = content
+                    news.save()
+                    result.append(news)
         return result
 
-    def _fetch_with_tagid(self, tag):
+    def _fetch_with_tagid(self, tag, today):
         result = []
         url = FetchSohu.tagid_url % str(tag.tagid)
         try:
@@ -161,42 +167,40 @@ class FetchSohu(object):
         except urllib2.URLError, e:
             urllib_error(e)
         else:
-            articles = json.load(resp)
-            articles = articles.get('newsList', '')
-            if articles:
-                #today_articles = self._today_filter(articles)
-                today_articles = articles
-                for d in today_articles:
-                    docid = d.get('newsId', '')
-                    try:
-                        article = News.objects.get(docid=docid)
-                    except ObjectDoesNotExist:
-                        article = News()
-                        article.tag = tag
-                        article.docid = docid
-                        article.title = d.get('title', '')
-                        article.big_pic = d.get('bigPic', '')
-                        article.list_pic = d.get('listpic', '')
-                        article.abstract = d.get('abstract', '')
-                        u_time, c_num, news = self._fetch_article(docid)
-                        article.update_time = u_time
-                        article.comment_num = c_num
-                        article.content = news
-                        article.save()
-                        result.append(article)
-                    else:
-                        print 'article already in db, %s' % article.title
-                        #article.list_pic = d.get('listpic', '')
-                        #article.save()
+            doc = json.load(resp)
+            news_list = doc.get('newsList', '')
+
+            if today:
+                news_today = self._today_filter(news_list)
+            else:
+                news_today = news_list
+
+            for d in news_today:
+                docid = d.get('newsId', '')
+                try:
+                    News.objects.get(docid=docid)
+                except ObjectDoesNotExist:
+                    news = News()
+                    news.tag = tag
+                    news.docid = docid
+                    news.title = d.get('title', '')
+                    news.big_pic = d.get('bigPic', '')
+                    news.list_pic = d.get('listpic', '')
+                    news.abstract = d.get('abstract', '')
+                    u_time, c_num, content = self._fetch_news(docid)
+                    news.update_time = u_time
+                    news.comment_num = c_num
+                    news.content = content
+                    news.save()
+                    result.append(news)
             return result
 
-    def _fetch_article(self, docid):
+    def _fetch_news(self, docid):
         url = FetchSohu.detail_url % docid
         try:
             resp = urllib2.urlopen(url)
         except urllib2.URLError as e:
             urllib_error(e)
-            return ('', 0, '')
         else:
             doc_json = json.load(resp)
             if doc_json:
@@ -207,8 +211,8 @@ class FetchSohu(object):
             else:
                 return ('', 0, '')
 
-    def _today_filter(self, articles):
-        r = [d for d in articles if datetime.date.today() ==
-             datetime.date.fromtimestamp(int(d.get('updateTime', '0000')[:-3]))]
-        print 'filter articles of today: ', r
+    def _today_filter(self, news_list):
+        r = [d for d in news_list if datetime.date.today() ==
+             datetime.date.fromtimestamp(
+                 int(d.get('updateTime', '0000')[:-3]))]
         return r

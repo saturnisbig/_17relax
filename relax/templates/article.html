@@ -3,7 +3,14 @@
 {% block content %}
 <div class="news">
     <h2>{{ article.title }}</h2>
+    {% if article.list_pic %}
+    <img src="{{ article.list_pic }}" />
+    {% else %}
+    {% if article.big_pic %}
     <img src="{{ article.big_pic }}" />
+    {% endif %}
+    {% endif %}
+
     <p>Tag: {{ article.tag.name }} From: {{ article.tag.come_from }}
         Updated: {{ article.update_time}} Comments: {{ article.comment_num }}</p>
 {% autoescape off %}
