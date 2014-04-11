@@ -59,7 +59,7 @@ class Fetch163(object):
 
     def _insert_latest_news(self, docid, tag):
         """
-        add or modify article with docid and tag, return the updated object
+        add or modify news with docid and tag, return the updated object
         """
         detail_link = Fetch163.detail_link % docid
         try:
@@ -84,7 +84,10 @@ class Fetch163(object):
                     news.comment_num = content['replyCount']
                     news.update_time = content['ptime']
                     img_list = content['img']
-                    news.list_pic = img_list[0]['src']
+                    if img_list:
+                        news.list_pic = img_list[0]['src']
+                    else:
+                        news.lict_pic = ''
                     news.content, desc = convert_163(content['body'], img_list)
                     news.abstract = desc
                     news.save()

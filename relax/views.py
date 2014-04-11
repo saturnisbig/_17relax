@@ -27,13 +27,14 @@ def update_today(request):
 
 
 def get_tag_news(request, tid):
-    tag = Tag.objects.get(id=int(tid))
-    if tag:
-        news = News.objects.all().filter(tag=tag).order_by('-update_time')
-        cn_tag = tag.name
-    else:
+    try:
+        tag = Tag.objects.get(id=int(tid))
+    except Tag.DoesNotExist:
         news = ['']
         cn_tag = ''
+    else:
+        news = News.objects.all().filter(tag=tag).order_by('-update_time')
+        cn_tag = tag.name
 
     return render(request, 'article_list.html', {'news': news,
                                                  'cn_tag': cn_tag})
