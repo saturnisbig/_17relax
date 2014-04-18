@@ -25,10 +25,6 @@ def convert_163(content, img_list):
     pat = u"(<!--IMG#\d+-->)"
     content = content.replace('<!--@@PRE-->', '')
     data = re.split(pat, content)  # remove the last item 声明内容
-    try:
-        abstract = data[0]
-    except IndexError:
-        abstract = ''
     for v in img_list:
         if v['ref'] in data:
             pos = data.index(v['ref'])
@@ -37,4 +33,4 @@ def convert_163(content, img_list):
                 </noscript><br />' % (v['alt'], v['src'], v['src'], v['alt'],
                                       v['src'])
             data[pos] = rep_img
-    return ' '.join(data), abstract
+    return ' '.join(data)

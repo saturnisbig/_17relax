@@ -12,7 +12,7 @@
     {% endif %}
 
     <p>Tag: {{ article.tag.name }} From: {{ article.tag.come_from }}
-        Updated: {{ article.update_time}} Comments: {{ article.comment_num }}</p>
+        Updated: {{ article.update_time}} Comments: {{ article.docid }}</p>
 {% autoescape off %}
 {{ article.content }}
 {% endautoescape %}

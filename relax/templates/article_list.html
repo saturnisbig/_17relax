@@ -19,7 +19,9 @@
         <time>{{ article.update_time }}</time>
         <span class="view-count"><strong>{{ article.comment_num }}</strong> 人围观,</span> <span class="ds-thread-count" data-thread-key=""></span>
          <span class="download">,<a title="下载txt" href="">下载</a></span>
-         <p>{{ article.abstraction }}</p>
+         {% autoescape off %}
+         <p>{{ article.abstract }}</p>
+         {% endautoescape %}
     </li>
     {% endfor %}
 </ul>

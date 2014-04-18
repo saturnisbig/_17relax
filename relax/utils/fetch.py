@@ -4,8 +4,10 @@
 import urllib2
 import json
 import datetime
+import re
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Q
 
 from relax.models import News
 from data_convert import convert_sohu_img, convert_163
@@ -26,6 +28,7 @@ class Fetch163(object):
         if self.tags:
             for t in self.tags:
                 result[t.name] = self._fetch_latest_for_tag(t, today)
+                print result[t.name]
         return result
 
     def _fetch_latest_for_tag(self, tag, today):
@@ -47,11 +50,20 @@ class Fetch163(object):
                     news_today = doc
                 for d in news_today:
                     docid = d.get('docid', '')
-                    if docid:
-                        try:
-                            News.objects.get(docid=docid)
-                        except News.DoesNotExist:
-                            result.append(self._insert_latest_news(docid, tag))
+                    #title = u'%s' % d.get('title', '')
+                    # the d.get('title') is a unicode string represent by
+                    # python str, so use unicode-escape to decode it.
+                    title = d.get('title', '').decode('unicode-escape')
+                    #print type(title)
+                    title = self._trans_title(title)
+                    if docid and title:
+                        news = News.objects.all()
+                        news_exits = news.filter(Q(docid=docid) |
+                                                 Q(title__contains=title))
+                        if not news_exits:
+                            news = self._insert_latest_news(docid, tag)
+                            if news:
+                                result.append(news)
             else:
                 print 'Fetch news for tag: %s, Error' % tag.name
 
@@ -67,9 +79,8 @@ class Fetch163(object):
         except urllib2.URLError as e:
             urllib_error(e)
         else:
-            news = News()
             doc_json = json.load(resp)
-            content = doc_json[doc_json.keys()[0]]
+            content = doc_json[docid]
             try:
                 title = content['title']
             except KeyError:
@@ -77,10 +88,11 @@ class Fetch163(object):
                                                                    docid)
             else:
                 if self._filter_test(title):
-                    print title
+                    #print title
+                    news = News()
                     news.docid = docid
                     news.tag = tag
-                    news.title = title
+                    news.title = self._trans_title(title)
                     news.comment_num = content['replyCount']
                     news.update_time = content['ptime']
                     img_list = content['img']
@@ -88,10 +100,35 @@ class Fetch163(object):
                         news.list_pic = img_list[0]['src']
                     else:
                         news.lict_pic = ''
-                    news.content, desc = convert_163(content['body'], img_list)
-                    news.abstract = desc
+                    body = content['body']
+                    news.content = convert_163(content['body'], img_list)
+                    news.abstract = self._retrieve_abstract(body)
                     news.save()
-            return news
+                    return news
+            return None
+
+    def _trans_title(self, title):
+        tables = {
+            u'（': u'(',
+            u'）': u')',
+            u'“': u'"',
+            u'”': u'"',
+            u'：': u':'
+        }
+        for k, v in tables.iteritems():
+            title = title.replace(k, v)
+        return title
+
+    def _retrieve_abstract(self, content):
+        pat = r'</p>'
+        content = content.replace('<!--@@PRE-->', '')
+        data = re.split(pat, content)  # remove the last item 声明内容
+        abstract = ''
+        try:
+            abstract = data[0].replace('<p>', '').replace('</p>', '')
+        except IndexError:
+            print data
+        return abstract
 
     def _filter_test(self, title):
         return not (u'测试' in title or 'test' in title)
