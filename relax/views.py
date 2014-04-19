@@ -6,11 +6,39 @@ from django.http import Http404
 
 import json
 import urllib2
+import datetime
 # Create your views here.
 from models import News, Tag
 from utils.data_convert import convert_sohu_img, convert_163
 from utils.fetch import Fetch163, FetchSohu
 from utils.data_import import update_163, update_sohu
+
+
+def home(request):
+    news = News.objects.all()
+
+    today = str(datetime.date.today())
+    news_today = news.filter(update_time__contains=today)
+
+    relax_tag = Tag.objects.get(id=5)
+    relax_news = news.filter(tag=relax_tag).order_by('-update_time')[:2]
+
+    voice_tag = Tag.objects.get(id=6)
+    voice_news = news.filter(tag=voice_tag).order_by('-update_time')[:2]
+
+    tucao_tag = Tag.objects.get(id=1)
+    tucao_news = news.filter(tag=tucao_tag).order_by('-update_time')[:2]
+
+    laping_tag = Tag.objects.get(id=2)
+    laping_news = news.filter(tag=laping_tag).order_by('-update_time')[:2]
+
+    return render(request, 'home.html', {
+        'news_today': news_today,
+        'relax_news': relax_news,
+        'voice_news': voice_news,
+        'tucao_news': tucao_news,
+        'laping_news': laping_news
+    })
 
 
 def update_today(request):
