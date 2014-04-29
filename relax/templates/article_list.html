@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ cn_tag }} - {% endblock %}
+{% block title %}{{ tag.name }} - {% endblock %}
 
 
 {% block content %}
@@ -26,5 +26,17 @@
     {% endfor %}
 </ul>
 
+<div class="pagination">
+  <ul>
+    {% if news.has_previous %}
+    <li><a href="/tag/{{ tag.id }}/page/{{ news.previous_page_number }}/">Prev</a></li>
+    {% endif %}
+    <li>Page {{ news.number }} of {{ news.paginator.num_pages }}</li>
+
+    {% if news.has_next %}
+    <li><a href="/tag/{{ tag.id }}/page/{{ news.next_page_number }}/">Next</a></li>
+    {% endif %}
+  </ul>
+</div>
 {% endblock %}
 

@@ -3,6 +3,7 @@
 
 from django.shortcuts import render
 from django.http import Http404
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 import json
 import urllib2
@@ -54,18 +55,24 @@ def update_today(request):
                                            'today_sohu': today_sohu})
 
 
-def get_tag_news(request, tid):
+def get_tag_news(request, tid, page):
     try:
         tag = Tag.objects.get(id=int(tid))
     except Tag.DoesNotExist:
         news = ['']
-        cn_tag = ''
     else:
-        news = News.objects.all().filter(tag=tag).order_by('-update_time')
-        cn_tag = tag.name
+        ordered_news = tag.news_set.order_by('-update_time')
+        paginator = Paginator(ordered_news, 10)
+        page = int(page)
+        try:
+            news = paginator.page(page)
+        except PageNotAnInteger:
+            news = paginator.page(1)
+        except EmptyPage:
+            news = paginator.page(paginator.num_pages)
 
     return render(request, 'article_list.html', {'news': news,
-                                                 'cn_tag': cn_tag})
+                                                 'tag': tag})
 
 
 def get_detail_news(request, news_id):

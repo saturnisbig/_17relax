@@ -28,7 +28,7 @@ class Fetch163(object):
         if self.tags:
             for t in self.tags:
                 result[t.name] = self._fetch_latest_for_tag(t, today)
-                print result[t.name]
+                #print result[t.name]
         return result
 
     def _fetch_latest_for_tag(self, tag, today):
@@ -53,15 +53,19 @@ class Fetch163(object):
                     #title = u'%s' % d.get('title', '')
                     # the d.get('title') is a unicode string represent by
                     # python str, so use unicode-escape to decode it.
-                    title = d.get('title', '').decode('unicode-escape')
+                    title = d.get('title', '')
                     #print type(title)
-                    title = self._trans_title(title)
+                    news_title = self._trans_title(title)
                     if docid and title:
-                        news = News.objects.all()
-                        news_exits = news.filter(Q(docid=docid) |
-                                                 Q(title__contains=title))
+                        news_exits = News.objects.filter(
+                            Q(docid=docid) | Q(title=news_title)
+                        )
+                        #print docid, news_title, news_exits
                         if not news_exits:
-                            news = self._insert_latest_news(docid, tag)
+                            print 'news_exists false', news_exits
+                            news = self._insert_latest_news(news_title, docid, tag)
+                            import time
+                            time.sleep(2)
                             if news:
                                 result.append(news)
             else:
@@ -69,7 +73,7 @@ class Fetch163(object):
 
             return result
 
-    def _insert_latest_news(self, docid, tag):
+    def _insert_latest_news(self, news_title, docid, tag):
         """
         add or modify news with docid and tag, return the updated object
         """
@@ -92,7 +96,7 @@ class Fetch163(object):
                     news = News()
                     news.docid = docid
                     news.tag = tag
-                    news.title = self._trans_title(title)
+                    news.title = news_title
                     news.comment_num = content['replyCount']
                     news.update_time = content['ptime']
                     img_list = content['img']
@@ -108,12 +112,13 @@ class Fetch163(object):
             return None
 
     def _trans_title(self, title):
+        print type(title), title
         tables = {
-            u'（': u'(',
-            u'）': u')',
-            u'“': u'"',
-            u'”': u'"',
-            u'：': u':'
+            '（': '(',
+            '）': ')',
+            '“': '"',
+            '”': '"',
+            '：': ':'
         }
         for k, v in tables.iteritems():
             title = title.replace(k, v)
