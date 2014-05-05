@@ -15,6 +15,10 @@ from utils.fetch import Fetch163, FetchSohu
 from utils.data_import import update_163, update_sohu
 
 
+def comment_view(request):
+    return render(request, 'comment_list.html')
+
+
 def home(request):
     news = News.objects.all()
 
@@ -55,13 +59,14 @@ def update_today(request):
                                            'today_sohu': today_sohu})
 
 
-def get_tag_news(request, tid, page):
+def get_tag_news(request, tid):
     try:
         tag = Tag.objects.get(id=int(tid))
     except Tag.DoesNotExist:
         news = ['']
     else:
         ordered_news = tag.news_set.order_by('-update_time')
+        page = request.GET.get('p', 1)
         paginator = Paginator(ordered_news, 10)
         page = int(page)
         try:
