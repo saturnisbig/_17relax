@@ -96,8 +96,8 @@
 </div>
 
 <div id="today_news" class="row-fluid">
-  <ul class="unstyled topic-list">
-    {% for article in news_today %}
+  <ul class="unstyled topic-list span8">
+    {% for article in news %}
     <li>
         <a title="{{ article.title }}" href="/news/{{ article.id }}/">
           <img class="lazy" src="{{ article.list_pic }}" data-original="{{
@@ -118,6 +118,18 @@
          {% endautoescape %}
     </li>
     {% endfor %}
+<div class="pagination">
+  <ul>
+    {% if news.has_previous %}
+    <li><a href="/?p={{ news.previous_page_number }}">Prev</a></li>
+    {% endif %}
+    <li>Page {{ news.number }} of {{ news.paginator.num_pages }}</li>
+
+    {% if news.has_next %}
+    <li><a href="/?p={{ news.next_page_number }}">Next</a></li>
+    {% endif %}
+  </ul>
+</div>
 </ul>
 </div>
 {% endblock %}

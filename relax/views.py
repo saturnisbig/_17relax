@@ -22,8 +22,18 @@ def comment_view(request):
 def home(request):
     news = News.objects.all()
 
-    today = str(datetime.date.today())
-    news_today = news.filter(update_time__contains=today)
+    #today = str(datetime.date.today())
+    #news_today = news.filter(update_time__contains=today)
+    page = request.GET.get('p', 1)
+    news_today = news.order_by('-update_time')
+    paginator = Paginator(news_today, 10)
+    page = int(page)
+    try:
+        news_today = paginator.page(page)
+    except PageNotAnInteger:
+        news_today = paginator.page(1)
+    except EmptyPage:
+        news_today = paginator.page(paginator.num_pages)
 
     relax_tag = Tag.objects.get(id=5)
     relax_news = news.filter(tag=relax_tag).order_by('-update_time')[:2]
@@ -38,7 +48,7 @@ def home(request):
     laping_news = news.filter(tag=laping_tag).order_by('-update_time')[:2]
 
     return render(request, 'home.html', {
-        'news_today': news_today,
+        'news': news_today,
         'relax_news': relax_news,
         'voice_news': voice_news,
         'tucao_news': tucao_news,
