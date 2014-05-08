@@ -5,7 +5,7 @@
 
 {% block content %}
 
-<div id="relaxMoment" class="row-fluid">
+<div id="relaxMoment" class="row-fluid box">
   <ul class="unstyled topic-list">
     {% for article in relax_news %}
     <li class="span3">
@@ -49,8 +49,7 @@
     {% endfor %}
   </ul>
 </div>
-<hr> 
-<div id="tucao_laping" class="row-fluid">
+<div id="tucao_laping" class="row-fluid box">
   <ul class="unstyled topic-list">
     {% for article in tucao_news %}
     <li class="span3">
@@ -96,40 +95,45 @@
 </div>
 
 <div id="today_news" class="row-fluid">
-  <ul class="unstyled topic-list span8">
-    {% for article in news %}
-    <li>
+  <div class="span8">
+    <ul class="unstyled topic-list">
+      {% for article in news %}
+      <li class="box">
         <a title="{{ article.title }}" href="/news/{{ article.id }}/">
           <img class="lazy" src="{{ article.list_pic }}" data-original="{{
           article.list_pic}}" alt="{{ article.title }}">
           <noscript><img src="{{ article.list_pic }}" alt="{{ article.title }}"></noscript>
         </a>
-        
+
         <h3><a href="/news/{{ article.id }}/" class="bigger-size">
             {{ article.title }}
         </a></h3>
         <time>{{ article.update_time|date:"Y-m-d H:i" }}</time>
         <span class="view-count">
-            <a href="/tag/{{ article.tag.id }}/">{{ article.tag.name }}</a></span>
+          <a href="/tag/{{ article.tag.id }}/">{{ article.tag.name }}</a></span>
         <span class="view-count"><strong>{{ article.comment_num }}</strong> 人围观,</span> <span class="ds-thread-count" data-thread-key=""></span>
-         <span class="download">,<a title="下载txt" href="">下载</a></span>
-         {% autoescape off %}
-         <p>{{ article.abstract }}</p>
-         {% endautoescape %}
-    </li>
-    {% endfor %}
-<div class="pagination">
-  <ul>
-    {% if news.has_previous %}
-    <li><a href="/?p={{ news.previous_page_number }}">Prev</a></li>
-    {% endif %}
-    <li>Page {{ news.number }} of {{ news.paginator.num_pages }}</li>
+        <span class="download">,<a title="下载txt" href="">下载</a></span>
+        {% autoescape off %}
+        <p>{{ article.abstract }}</p>
+        {% endautoescape %}
+      </li>
+      {% endfor %}
+      <div class="pagination">
+        <ul>
+          {% if news.has_previous %}
+          <li><a href="/?p={{ news.previous_page_number }}">Prev</a></li>
+          {% endif %}
+          <li>Page {{ news.number }} of {{ news.paginator.num_pages }}</li>
 
-    {% if news.has_next %}
-    <li><a href="/?p={{ news.next_page_number }}">Next</a></li>
-    {% endif %}
-  </ul>
-</div>
-</ul>
+          {% if news.has_next %}
+          <li><a href="/?p={{ news.next_page_number }}">Next</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </ul>
+  </div>
+  <div class="offset1 span3">
+    {% include 'comments.html' %}
+  </div>
 </div>
 {% endblock %}

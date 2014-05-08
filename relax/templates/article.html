@@ -1,21 +1,24 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="news">
+<div class="news span8">
     <h2>{{ article.title }}</h2>
-    {% if article.list_pic %}
+<!--    {# {% if article.list_pic %}
     <img src="{{ article.list_pic }}" />
     {% else %}
     {% if article.big_pic %}
     <img src="{{ article.big_pic }}" />
     {% endif %}
     {% endif %}
+    #}
+    -->
 
     <p>Tag: {{ article.tag.name }} From: {{ article.tag.come_from }}
-        Updated: {{ article.update_time}} Comments: {{ article.docid }}</p>
+        Updated: {{ article.update_time}} Comments: {{ article.comment_num }}</p>
 {% autoescape off %}
 {{ article.content }}
 {% endautoescape %}
+
 
 <!-- 多说评论框 start -->
 <div id="comments">
