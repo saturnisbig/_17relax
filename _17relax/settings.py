@@ -38,7 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'bootstrap_toolkit',
     'relax',
-    'duoshuo',
+    #'duoshuo',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -84,8 +84,3 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
 STATIC_URL = '/static/'
-
-
-# Duoshuo
-DUOSHUO_SECRET = '731952862a1edd6ec6e3b22953f8ee7f'
-DUOSHUO_SHORT_NAME = '17relax'
