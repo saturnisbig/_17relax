@@ -61,21 +61,38 @@ class Fetch163(object):
                             Q(docid=docid) | Q(title=news_title)
                         )
                         #print docid, news_title, news_exits
+                        intro, body, c_num, ptime, pic = self._fetch_news(docid)
                         if not news_exits:
-                            print 'news_exists false', news_exits
-                            news = self._insert_latest_news(news_title, docid, tag)
+                            print 'new news', news_title, docid
+                            news = News()
+                            news.docid = docid
+                            news.title = news_title
+                            news.content = body
+                            news.tag = tag
+                            news.comment_num = c_num
+                            news.list_pic = pic
+                            news.abstract = intro
+                            news.update_time = ptime
+                            news.save()
                             import time
                             time.sleep(2)
                             if news:
                                 result.append(news)
+                        else:
+                            print 'update news', news_title
+                            n = news_exits[0]
+                            print 'old:', n.comment_num, 'new:', c_num
+                            n.comment_num = c_num
+                            n.save()
             else:
                 print 'Fetch news for tag: %s, Error' % tag.name
 
             return result
 
-    def _insert_latest_news(self, news_title, docid, tag):
+    def _fetch_news(self, docid):
         """
-        add or modify news with docid and tag, return the updated object
+        fetch the news by docid
+        return: comment_num, list_pic, content, abstract
         """
         detail_link = Fetch163.detail_link % docid
         try:
@@ -83,36 +100,32 @@ class Fetch163(object):
         except urllib2.URLError as e:
             urllib_error(e)
         else:
-            doc_json = json.load(resp)
-            content = doc_json[docid]
             try:
+                doc_json = json.load(resp)
+                content = doc_json[docid]
                 title = content['title']
             except KeyError:
-                print "Error while Fetching Tag: %s, docid: %s" % (tag.name,
-                                                                   docid)
+                print "Error while Fetching docid: %s" % docid
+            except ValueError:
+                print "No JSON obj could be decoded", resp.read()
             else:
                 if self._filter_test(title):
                     #print title
-                    news = News()
-                    news.docid = docid
-                    news.tag = tag
-                    news.title = news_title
-                    news.comment_num = content['replyCount']
-                    news.update_time = content['ptime']
+                    c_num = content['replyCount']
+                    ptime = content['ptime']
                     img_list = content['img']
                     if img_list:
-                        news.list_pic = img_list[0]['src']
+                        list_pic = img_list[0]['src']
                     else:
-                        news.lict_pic = ''
+                        list_pic = ''
                     body = content['body']
-                    news.content = convert_163(content['body'], img_list)
-                    news.abstract = self._retrieve_abstract(body)
-                    news.save()
-                    return news
-            return None
+                    abstract = self._retrieve_abstract(body)
+                    body = convert_163(body, img_list)
+                    return abstract, body, c_num, ptime, list_pic
+            return '', '', '', '', list_pic
 
     def _trans_title(self, title):
-        print type(title), title
+        #print type(title), title
         tables = {
             '（': '(',
             '）': ')',
@@ -189,7 +202,7 @@ class FetchSohu(object):
             for d in news_today:
                 docid = d.get('id', '')
                 try:
-                    News.objects.get(docid=docid)
+                    n = News.objects.get(docid=docid)
                 except ObjectDoesNotExist:
                     news = News()
                     news.tag = tag
@@ -202,6 +215,9 @@ class FetchSohu(object):
                     news.content = content
                     news.save()
                     result.append(news)
+                else:
+                    u_time, c_num, content = self._fetch_news(docid)
+                    n.comment_num = c_num
         return result
 
     def _fetch_with_tagid(self, tag, today):
