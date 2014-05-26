@@ -38,7 +38,6 @@
                 <li id="relaping"><a href="/tag/2" data-placement="bottom" data-toggle="tooltip" data-original-title="热辣评">辣评</a></li>
                 <li id="bigbang"><a href="/tag/10" data-placement="bottom" data-toggle="tooltip" data-original-title="娱乐BigBang">娱乐</a></li>
                 <li id="yibaike"><a href="/tag/11" data-placement="bottom" data-toggle="tooltip" data-original-title="易百科">百科</a></li>
-                <li id="lishi"><a href="/tag/9" data-placement="bottom" data-toggle="tooltip" data-original-title="历史七日谈">历史</a></li>
                 <li id="kexue"><a href="/tag/8" data-placement="bottom" data-toggle="tooltip" data-original-title="科学现场调查">科学</a></li>
                 <li id="update_today"><a href="/updateToday/" data-placement="bottom" data-toggle="tooltip" data-original-title="开始今日更新">更新</a></li>
               </ul>
@@ -53,16 +52,19 @@
       </div>
 
       <div class="ym-wrapper" id="body-main">
-        <!--
-        <p>
-          {# block breadcrumbs %}{% endblock #}
-        </p>
-        -->
         <!--[if lt IE 7]>
         <p class="chromeframe">您还在使用 <strong>IE6</strong>？ 请 <a href="http://browsehappy.com/">升级到IE7以上</a> 或者 <a href="http://www.google.com/chromeframe/?redirect=true">启用 Google Chrome Frame</a> 以获得更好的体验.</p>
         <![endif]-->
+        {% block top_list %}{% endblock %}
 
-        {% block content %}{% endblock %}
+        <div class="row-fluid">
+          <div class="span8">
+            {% block content %}{% endblock %}
+          </div>
+          <div class="offset1 span3">
+            {% block side_bar %}{% endblock%}
+          </div>
+        </div>
 
         <footer>
           <hr>

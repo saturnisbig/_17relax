@@ -1,7 +1,6 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="news span8">
     <h2>{{ article.title }}</h2>
 <!--    {# {% if article.list_pic %}
     <img src="{{ article.list_pic }}" />
@@ -14,7 +13,8 @@
     -->
 
     <p>Tag: {{ article.tag.name }} From: {{ article.tag.come_from }}
-        Updated: {{ article.update_time}} Comments: {{ article.comment_num }}</p>
+      Updated: {{ article.update_time|date:"Y-m-d H:i"}} Comments: 
+      {{ article.comment_num }} View:{{ article.view_num }}</p>
 {% autoescape off %}
 {{ article.content }}
 {% endautoescape %}
@@ -38,6 +38,8 @@
 </script>
 <!-- 多说公共JS代码 end -->
 </div>
-</div>
 {% endblock %}
 
+{% block side_bar %}
+  {% include 'comments.html' %}
+{% endblock %}

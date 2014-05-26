@@ -133,7 +133,7 @@ class Fetch163(object):
             abstract = data[0].replace('<p>', '').replace('</p>', '')
         except IndexError:
             print data
-        return abstract
+        return abstract if len(abstract) < 100 else abstract[:100]
 
     def _filter_test(self, title):
         return not (u'测试' in title or 'test' in title)

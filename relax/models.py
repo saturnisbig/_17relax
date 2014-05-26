@@ -23,6 +23,7 @@ class News(models.Model):
     comment_num = models.IntegerField(default=0)
     ctime = models.DateTimeField(auto_now_add=True)
     tag = models.ForeignKey(Tag)
+    view_num = models.IntegerField(default=1)
 
     def __unicode__(self):
         return self.title

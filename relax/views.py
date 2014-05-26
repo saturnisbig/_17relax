@@ -93,6 +93,8 @@ def get_tag_news(request, tid):
 def get_detail_news(request, news_id):
     news = News.objects.get(id=int(news_id))
     if news:
+        news.view_num += 1
+        news.save()
         return render(request, 'article.html', {'article': news})
     else:
         raise Http404
@@ -160,7 +162,7 @@ def update_tags(request):
 
 def txt_import(request):
     """ import data from output files """
-    update_163()
+    #update_163()
     #update_sohu()
     news = News.objects.all()
     return render(request, 'updated_sohu.html', {'news': news})
