@@ -62,59 +62,63 @@
             {% block content %}{% endblock %}
           </div>
           <div class="offset1 span3">
-            {% block side_bar %}{% endblock%}
+            <!--cnzz tui-->
+            <script  type="text/javascript" c=gd  charset="utf-8"
+            src="http://tui.cnzz.net/cs.php?id=1000077385"></script>
+          <!--cnzz tui-->
+          {% block side_bar %}{% endblock%}
+        </div>
+      </div>
+
+      <footer>
+        <hr>
+        <div class="row-fluid">
+          <div class="span6">
+            <p>&copy;2013 <a href="http://www.17relax.net">17放松</a></p>
+            <p class="text-left"><small>本站所有内容均来自网络，便于阅读，版权归原版权人所有，如有侵权，请联系我们，我们会及时删除侵权内容，谢谢！</small></p>
           </div>
         </div>
-
-        <footer>
-          <hr>
-          <div class="row-fluid">
-            <div class="span6">
-              <p>&copy;2013 <a href="http://www.17relax.com">17放松</a></p>
-              <p class="text-left"><small>本站所有内容均来自网络，便于阅读，版权归原版权人所有，如有侵权，请联系我们，我们会及时删除侵权内容，谢谢！</small></p>
-            </div>
-          </div>
-        </footer>
-      </div>
-      <a style="display:none;" rel="nofollow" href="#header" id="go-to-top">▲</a>
-      <script src="/static/js/jquery-1.8.3.min.js"></script>
-        <script type="text/javascript" src="/static/js/all.js"></script>
-        <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
-        <script src="/static/js/jquery.lazyload.min.js" type="text/javascript"></script>
-        <script type="text/javascript">
-          $(function() {
-              /*
-                 var url=window.location.pathname;
-                 var active_page= $('.nav li a[href="'+url+'"]').parent();
-                 active_page.addClass('active');
-               */
-              $("img.lazy").lazyload({ 
-effect : "fadeIn"
-});
-              //$("#home").data('一起放松');
-              var active =  '{{active}}' || 'home';
-              var node = $('#' + active);
-              if (node.attr('class') !== 'active') {
-              $('.active', '.nav').removeClass('active');
-              node.addClass('active');
-              }
-              $("#go-to-top").click(function(){
-                $("html, body").animate({'scrollTop': 0}, 400);
-                return false;
-                });
-              $(window).scroll(function() {
-                var top = $(document).scrollTop();
-                var g = $("#go-to-top");
-                if (top > 300 && g.is(":hidden")) {
-                g.fadeIn();
-                } else if(top < 300 && g.is(":visible")) {
-                g.fadeOut();
-                }
-                });
-});
-            $("a[data-toggle=tooltip]").tooltip().hover(function(e) {
-                e.preventDefault()
-            })
+      </footer>
+    </div>
+    <a style="display:none;" rel="nofollow" href="#header" id="go-to-top">▲</a>
+    <script src="/static/js/jquery-1.8.3.min.js"></script>
+    <script type="text/javascript" src="/static/js/all.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/jquery.lazyload.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+      $(function() {
+        /*
+           var url=window.location.pathname;
+           var active_page= $('.nav li a[href="'+url+'"]').parent();
+           active_page.addClass('active');
+         */
+        $("img.lazy").lazyload({ 
+          effect : "fadeIn"
+        });
+        //$("#home").data('一起放松');
+        var active =  '{{active}}' || 'home';
+        var node = $('#' + active);
+        if (node.attr('class') !== 'active') {
+          $('.active', '.nav').removeClass('active');
+          node.addClass('active');
+        }
+        $("#go-to-top").click(function(){
+          $("html, body").animate({'scrollTop': 0}, 400);
+          return false;
+        });
+        $(window).scroll(function() {
+          var top = $(document).scrollTop();
+          var g = $("#go-to-top");
+          if (top > 300 && g.is(":hidden")) {
+            g.fadeIn();
+          } else if(top < 300 && g.is(":visible")) {
+            g.fadeOut();
+          }
+        });
+      });
+$("a[data-toggle=tooltip]").tooltip().hover(function(e) {
+  e.preventDefault()
+})
 </script>
 {% block js%}{% endblock %}
   </body>
