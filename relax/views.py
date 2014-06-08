@@ -7,12 +7,10 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 import json
 import urllib2
-import datetime
 # Create your views here.
 from models import News, Tag
 from utils.data_convert import convert_sohu_img, convert_163
 from utils.fetch import Fetch163, FetchSohu
-from utils.data_import import update_163, update_sohu
 
 
 def comment_view(request):
@@ -63,7 +61,7 @@ def update_today(request):
     today_163 = fetch_163.fetch(today=True)
     tags_sohu = tags.filter(come_from__contains='搜狐')
     fetch_sohu = FetchSohu(tags_sohu)
-    today_sohu = fetch_sohu.fetch(today=True)
+    today_sohu = fetch_sohu.fetch(today=False)
     #print today_163
     return render(request, 'output.html', {'today_163': today_163,
                                            'today_sohu': today_sohu})

@@ -8,9 +8,13 @@
     {% for article in news %}
     <li>
         <a title="{{ article.title }}" href="/news/{{ article.id }}/">
-          <img class="lazy" src="{{ article.list_pic }}" data-original="{{
-          article.list_pic}}" alt="{{ article.title }}">
+          {% if article.list_pic %}
+          <img class="lazy" src="{{ article.list_pic }}" data-original="{{ article.list_pic }}" alt="{{ article.title }}">
           <noscript><img src="{{ article.list_pic }}" alt="{{ article.title }}"></noscript>
+          {% else %}
+          <img class="lazy" src="/static/image/17relax.jpg" data-original="/static/image/17relax.jpg" alt="{{ article.title }}">
+          <noscript><img src="/static/image/17relax.jpg" alt="{{ article.title }}"></noscript>
+          {% endif %}
         </a>
         
         <h3><a href="/news/{{ article.id }}/" class="bigger-size">

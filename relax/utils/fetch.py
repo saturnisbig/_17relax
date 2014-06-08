@@ -9,7 +9,7 @@ import re
 from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
 
-from relax.models import News
+from relax.models import News, Tag
 from data_convert import convert_sohu_img, convert_163
 from basic import urllib_error
 
@@ -151,9 +151,21 @@ class Fetch163(object):
     def _filter_test(self, title):
         return not (u'测试' in title or 'test' in title)
 
-    def _today_filter(self, doc):
-        return [d for d in doc if str(datetime.date.today()) in
-                d.get('ptime', '')]
+    def _today_filter(self, doc, delta=3):
+        days = []
+        result = []
+        if delta > 0:
+            today = datetime.date.today()
+            days.append(today)
+            for oneday in range(1, delta+1):
+                days.append(today - datetime.timedelta(days=oneday))
+        for day in days:
+            for d in doc:
+                if str(day) in d.get('ptime', ''):
+                    result.append(d)
+        return result
+        #return [d for d in doc if str(datetime.date.today()) in
+        #        d.get('ptime', '')]
 
 
 class FetchSohu(object):
@@ -277,3 +289,13 @@ class FetchSohu(object):
              datetime.date.fromtimestamp(
                  int(d.get('updateTime', '0000')[:-3]))]
         return r
+
+
+if __name__ == '__main__':
+    tags = Tag.objects.all()
+    tags_163 = tags.filter(come_from__contains='网易')
+    fetch_163 = Fetch163(tags_163)
+    today_163 = fetch_163.fetch(today=True)
+    tags_sohu = tags.filter(come_from__contains='搜狐')
+    fetch_sohu = FetchSohu(tags_sohu)
+    today_sohu = fetch_sohu.fetch(today=False)

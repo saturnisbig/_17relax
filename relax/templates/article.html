@@ -12,9 +12,9 @@
     #}
     -->
 
-    <p>Tag: {{ article.tag.name }} From: {{ article.tag.come_from }}
-      Updated: {{ article.update_time|date:"Y-m-d H:i"}} Comments: 
-      {{ article.comment_num }} View:{{ article.view_num }}</p>
+    <p>标签: {{ article.tag.name }} 来自: {{ article.tag.come_from }}
+      发布于: {{ article.update_time|date:"Y-m-d H:i"}} 吐嘈: 
+      {{ article.comment_num }} 查看：{{ article.view_num }}</p>
 {% autoescape off %}
 {{ article.content }}
 {% endautoescape %}
