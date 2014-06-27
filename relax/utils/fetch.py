@@ -45,7 +45,7 @@ class Fetch163(object):
             doc = eval(resp.read())
             if doc and type(doc) is list:
                 if today:
-                    news_today = self._today_filter(doc)
+                    news_today = self._today_filter(doc, delta=2)
                 else:
                     news_today = doc
                 for d in news_today:
@@ -154,9 +154,9 @@ class Fetch163(object):
     def _today_filter(self, doc, delta=3):
         days = []
         result = []
+        today = datetime.date.today()
+        days.append(today)
         if delta > 0:
-            today = datetime.date.today()
-            days.append(today)
             for oneday in range(1, delta+1):
                 days.append(today - datetime.timedelta(days=oneday))
         for day in days:

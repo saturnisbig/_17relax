@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ tag.name }} - {% endblock %}
+
+
+{% block content %}
+<ul class="unstyled topic-list">
+    {% for article in news %}
+    <li>
+        <a title="{{ article.title }}" href="/news/{{ article.id }}/">
+          {% if article.list_pic %}
+          <img class="lazy" src="{{ article.list_pic }}" data-original="{{ article.list_pic }}" alt="{{ article.title }}">
+          <noscript><img src="{{ article.list_pic }}" alt="{{ article.title }}"></noscript>
+          {% else %}
+          <img class="lazy" src="/static/image/17relax.jpg" data-original="/static/image/17relax.jpg" alt="{{ article.title }}">
+          <noscript><img src="/static/image/17relax.jpg" alt="{{ article.title }}"></noscript>
+          {% endif %}
+        </a>
+        
+        <h3><a href="/news/{{ article.id }}/" class="bigger-size">
+            {{ article.title }}
+        </a></h3>
+        <time>{{ article.update_time|date:"Y-m-d H:i" }}</time>
+        <span class="view-count"><strong>{{ article.comment_num }}</strong> 人围观,</span> <span class="ds-thread-count" data-thread-key=""></span>
+        <span class="view-count">查看{{ article.view_num }}次</span>
+         {% autoescape off %}
+         <p>{{ article.abstract }}</p>
+         {% endautoescape %}
+    </li>
+    {% endfor %}
+</ul>
+
+<div class="pagination">
+  <ul>
+    {% if news.has_previous %}
+    <li><a href="/tag/{{ tag.id }}?p={{ news.previous_page_number }}">Prev</a></li>
+    {% endif %}
+    <li>Page {{ news.number }} of {{ news.paginator.num_pages }}</li>
+
+    {% if news.has_next %}
+    <li><a href="/tag/{{ tag.id }}?p={{ news.next_page_number }}">Next</a></li>
+    {% endif %}
+  </ul>
+</div>
+{% endblock %}
+
+{% block side_bar %}
+  {% include 'comments.html' %}
+{% endblock %}
+
