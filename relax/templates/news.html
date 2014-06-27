@@ -1,25 +1,45 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ article.title }} - {% endblock %}
-
 {% block content %}
-<div class="news">
-    <div class="page-header">
-        <h2>{{ article.title }}</h2>
-        <small>
-          <em>来源: {{ article.come_from }},&nbsp;&nbsp;{{ article.update_time }},
-                &nbsp;&nbsp;{{ article.tag.name }}
-                &nbsp;&nbsp;{{ article.comment_num }} 人围观,
-            </em>
-        </small>
+    <h2>{{ article.title }}</h2>
+<!--    {# {% if article.list_pic %}
+    <img src="{{ article.list_pic }}" />
+    {% else %}
+    {% if article.big_pic %}
+    <img src="{{ article.big_pic }}" />
+    {% endif %}
+    {% endif %}
+    #}
+    -->
 
-    </div>
+    <p>标签: {{ article.tag.name }} 来自: {{ article.tag.come_from }}
+      发布于: {{ article.update_time|date:"Y-m-d H:i"}} 吐嘈: 
+      {{ article.comment_num }} 查看：{{ article.view_num }}</p>
+{% autoescape off %}
+{{ article.content }}
+{% endautoescape %}
 
-    <div class="news-content }}">
-        {{ article.content }}
 
-    </div>
-    <br />
+<!-- 多说评论框 start -->
+<div id="comments">
+<div class="ds-thread" data-thread-key="{{ article.id }}" data-title="{{ article.title }}" data-url="http://localhost/news/{{ article.id }}/"></div>
+<!-- 多说评论框 end -->
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"17relax"};
+(function() {
+  var ds = document.createElement('script');
+  ds.type = 'text/javascript';ds.async = true;
+  ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+  ds.charset = 'UTF-8';
+  (document.getElementsByTagName('head')[0] 
+   || document.getElementsByTagName('body')[0]).appendChild(ds);
+})();
+</script>
+<!-- 多说公共JS代码 end -->
 </div>
+{% endblock %}
 
+{% block side_bar %}
+  {% include 'comments.html' %}
 {% endblock %}

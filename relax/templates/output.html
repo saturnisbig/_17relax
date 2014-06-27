@@ -11,7 +11,7 @@
 {% for tag, articles in today_163.items %}
 <p>{{ tag }}</p>
 {% for article in articles %}
-<p><a href='/article/{{ article.id }}/'>{{ article.title }}</a>
+<p><a href='/news/{{ article.id }}/'>{{ article.title }}</a>
   {{ article.update_time }} {{ article.abstract }}</p>
 {% endfor %}
 {% endfor %}
@@ -20,7 +20,7 @@
 {% for tag, articles in today_sohu.items %}
 <p>{{ tag }}</p>
 {% for article in articles %}
-<p><a href='/article/{{ article.id }}/'>{{ article.title }}</a>
+<p><a href='/news/{{ article.id }}/'>{{ article.title }}</a>
   {{ article.update_time }} {{ article.abstract }}</p>
 {% endfor %}
 {% endfor %}
