@@ -6,7 +6,8 @@ from django.db import models
 
 class Tag(models.Model):
     name = models.CharField("标签名", max_length=25, unique=True)
-    tagid = models.IntegerField("标签ID", blank=True, default=0)
+    #tagid = models.IntegerField("标签ID", blank=True, default=0)
+    tagid = models.CharField("标签ID", max_length=80, blank=True, default='')
     come_from = models.CharField("来自哪", max_length=25, blank=True)
     ctime = models.DateTimeField(auto_now_add=True)
     #times update daily or weekly
@@ -21,7 +22,7 @@ class News(models.Model):
     big_pic = models.URLField("封面图片", blank=True)
     list_pic = models.URLField("列表显示图片", blank=True)
     abstract = models.CharField("新闻简介", max_length=200, blank=True)
-    update_time = models.DateTimeField("新闻更新时间", blank=True, null=True)
+    update_time = models.DateTimeField("新闻更新时间", default='')
     content = models.TextField("新闻内容")
     comment_num = models.IntegerField("新闻评论数", default=0)
     ctime = models.DateTimeField(auto_now_add=True)
